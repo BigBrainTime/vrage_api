@@ -84,195 +84,196 @@ class VRageAPI:
 
         try:
             return request.json()
+        # TODO properly define this error
         except:
             logger.error(f"Unable to decode JSON response {request.text}")
             raise ValueError("Unable to decode JSON response")
 
-    def get_players(self) -> dict:
+    async def get_players(self) -> dict:
         """Gets all players in the current session"""
-        return self.query(f"{self.api_endpoint}/session/players")
+        return await self.query(f"{self.api_endpoint}/session/players")
 
-    def get_asteroids(self) -> dict:
+    async def get_asteroids(self) -> dict:
         """Gets all the asteroids in the current session"""
-        return self.query(f"{self.api_endpoint}/session/asteroids")
+        return await self.query(f"{self.api_endpoint}/session/asteroids")
 
-    def get_floating_objects(self) -> dict:
+    async def get_floating_objects(self) -> dict:
         """Gets all floating objects in the current session"""
-        return self.query(f"{self.api_endpoint}/session/floatingObjects")
+        return await self.query(f"{self.api_endpoint}/session/floatingObjects")
 
-    def get_grids(self) -> dict:
+    async def get_grids(self) -> dict:
         """Gets all the grids in the current session"""
-        return self.query(f"{self.api_endpoint}/session/grids")
+        return await self.query(f"{self.api_endpoint}/session/grids")
 
-    def get_planets(self) -> dict:
+    async def get_planets(self) -> dict:
         """Gets all the planets in the current session"""
-        return self.query(f"{self.api_endpoint}/session/planets")
+        return await self.query(f"{self.api_endpoint}/session/planets")
 
-    def get_chat(self) -> dict:
+    async def get_chat(self) -> dict:
         """Gets the chat history for the current session"""
-        return self.query(f"{self.api_endpoint}/session/chat")
+        return await self.query(f"{self.api_endpoint}/session/chat")
 
-    def get_server_info(self) -> dict:
+    async def get_server_info(self) -> dict:
         """Gets Server Info like used PCU stats, Server Name, CPU Load, etc.."""
-        return self.query(f"{self.api_endpoint}/server")
+        return await self.query(f"{self.api_endpoint}/server")
 
-    def get_server_ping(self) -> dict:
+    async def get_server_ping(self) -> dict:
         """Gets Server Ping (eg. if server is up and responding)"""
-        return self.query(f"{self.api_endpoint}/server/ping")
+        return await self.query(f"{self.api_endpoint}/server/ping")
 
-    def get_banned_players(self) -> dict:
+    async def get_banned_players(self) -> dict:
         """Gets all banned players for the server"""
-        return self.query(f"{self.api_endpoint}/admin/bannedPlayers")
+        return await self.query(f"{self.api_endpoint}/admin/bannedPlayers")
 
-    def get_kicked_players(self) -> dict:
+    async def get_kicked_players(self) -> dict:
         """Gets all kicked players for the current session"""
-        return self.query(f"{self.api_endpoint}/admin/kickedPlayers")
+        return await self.query(f"{self.api_endpoint}/admin/kickedPlayers")
 
-    def delete_asteroid(self, entity_id: int) -> dict:
+    async def delete_asteroid(self, entity_id: int) -> dict:
         """Deletes an asteroid in the current session
 
         Arguments:
             entity_id:  ID of the entity
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/session/asteroids/{entity_id}", operation="delete"
         )
 
-    def delete_floating_object(self, entity_id: int) -> dict:
+    async def delete_floating_object(self, entity_id: int) -> dict:
         """Deletes a floating object in the current session
 
         Arguments:
             entity_id:  ID of the entity
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/session/floatingObjects/{entity_id}",
             operation="delete",
         )
 
-    def delete_grid(self, entity_id: int) -> dict:
+    async def delete_grid(self, entity_id: int) -> dict:
         """Deletes a grid in the current session
 
         Arguments:
             entity_id:  ID of the entity
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/session/grids/{entity_id}", operation="delete"
         )
 
-    def delete_planet(self, entity_id: int) -> dict:
+    async def delete_planet(self, entity_id: int) -> dict:
         """Deletes a planet in the current session
 
         Arguments:
             entity_id:  ID of the entity
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/session/planets/{entity_id}", operation="delete"
         )
 
-    def stop_grid(self, entity_id: int) -> dict:
+    async def stop_grid(self, entity_id: int) -> dict:
         """Stops a moving grid in the current session
 
         Arguments:
             entity_id:  ID of the entity
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/session/grids/{entity_id}", operation="patch"
         )
 
-    def stop_floating_object(self, entity_id: int) -> dict:
+    async def stop_floating_object(self, entity_id: int) -> dict:
         """Stops a floating object in the current session
 
         Arguments:
             entity_id:  ID of the entity
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/session/floatingObjects/{entity_id}",
             operation="patch",
         )
 
-    def power_down_powered_grid(self, entity_id: int) -> dict:
+    async def power_down_powered_grid(self, entity_id: int) -> dict:
         """Powers down a grid in the current session
 
         Arguments:
             entity_id:  ID of the entity
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/session/poweredGrids/{entity_id}", operation="delete"
         )
 
-    def power_up_powered_grid(self, entity_id: int) -> dict:
+    async def power_up_powered_grid(self, entity_id: int) -> dict:
         """Powers up a grid in the current session
 
         Arguments:
             entity_id:  ID of the entity
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/session/poweredGrids/{entity_id}", operation="post"
         )
 
-    def send_chat_message(self, message: str) -> dict:
-        return self.query(f"{self.api_endpoint}/session/chat",operation='post',json=message)
+    async def send_chat_message(self, message: str) -> dict:
+        return await self.query(f"{self.api_endpoint}/session/chat", operation='post', json=message)
 
-    def stop_server(self) -> dict:
+    async def stop_server(self) -> dict:
         """Stops the current server session"""
-        return self.query(f"{self.api_endpoint}/server", operation="delete")
+        return await self.query(f"{self.api_endpoint}/server", operation="delete")
 
-    def player_promote(self, steam_id: str) -> dict:
+    async def player_promote(self, steam_id: str) -> dict:
         """Promotes a player up 1 level based on the SteamID
 
         Arguments:
             steam_id:   SteamID of the player
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/admin/promotedPlayers/{steam_id}", operation="post"
         )
 
-    def player_demote(self, steam_id: str) -> dict:
+    async def player_demote(self, steam_id: str) -> dict:
         """Demotes a player down 1 level based on the SteamID
 
         Arguments:
             steam_id:   SteamID of the player
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/admin/promotedPlayers/{steam_id}", operation="delete"
         )
 
-    def player_ban(self, steam_id: str) -> dict:
+    async def player_ban(self, steam_id: str) -> dict:
         """Ban a player based on the SteamID
 
         Arguments:
             steam_id:   SteamID of the player
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/admin/bannedPlayers/{steam_id}", operation="post"
         )
 
-    def player_unban(self, steam_id: str) -> dict:
+    async def player_unban(self, steam_id: str) -> dict:
         """Unban a player based on the SteamID
 
         Arguments:
             steam_id:   SteamID of the player
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/admin/bannedPlayers/{steam_id}", operation="delete"
         )
 
-    def player_kick(self, steam_id: str) -> dict:
+    async def player_kick(self, steam_id: str) -> dict:
         """Kick a player based on the SteamID
 
         Arguments:
             steam_id:   SteamID of the player
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/admin/kickedPlayers/{steam_id}", operation="post"
         )
 
-    def player_unkick(self, steam_id: str) -> dict:
+    async def player_unkick(self, steam_id: str) -> dict:
         """Unkick a player based on the SteamID
 
         Arguments:
             steam_id:   SteamID of the player
         """
-        return self.query(
+        return await self.query(
             f"{self.api_endpoint}/admin/kickedPlayers/{steam_id}", operation="delete"
         )
