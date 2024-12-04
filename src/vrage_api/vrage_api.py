@@ -1,4 +1,4 @@
-import requests
+import httpx
 import base64
 import hmac
 import hashlib
@@ -24,6 +24,11 @@ class VRageAPI:
         self.api_endpoint = api_endpoint
         self.headers = {"Content-Type": "application/json"}
 
+        self.client = httpx.AsyncClient()
+
+    async def disconnect(self):
+        await self.client.aclose()
+
     def build_headers(self, endpoint: str) -> dict:
         """Returns the relevant headers required to query
         the Space Engineers VRage API. Terrible API implementation from Keen Software house...
@@ -43,20 +48,20 @@ class VRageAPI:
         self.headers.update({"Date": date, "Authorization": f"{nonce}:{hmac_encoded}"})
         return self.headers
 
-    def query(self, endpoint: str, operation: str = "get",json=None) -> dict:
+    async def query(self, endpoint: str, operation: str = "get",json=None) -> dict:
         """Builds a GET HTTP message
 
         Arguments:
             endpoint:   URL endpoint (eg. /server/ping)
         """
         valid_operations = {
-            "get": requests.get,
-            "patch": requests.patch,
-            "post": requests.post,
-            "delete": requests.delete,
+            "get": self.client.get,
+            "patch": self.client.patch,
+            "post": self.client.post,
+            "delete": self.client.delete,
         }
 
-        if not operation.lower() in valid_operations.keys():
+        if operation.lower() not in valid_operations.keys():
             raise ValueError(
                 f"Operation {operation} is not valid. Supported operations are: {valid_operations}"
             )
@@ -65,14 +70,14 @@ class VRageAPI:
         operation_method = valid_operations[operation.lower()]
 
         if json is None:
-            request = operation_method(
+            request = await operation_method(
                 self.url + endpoint,
                 headers=self.build_headers(endpoint=endpoint),
             )
         else:
-            request = operation_method(self.url + endpoint,json=json,headers=self.build_headers(endpoint=endpoint))
+            request = await operation_method(self.url + endpoint,json=json,headers=self.build_headers(endpoint=endpoint))
 
-        if not request.status_code == 200:
+        if request.status_code != 200:
             raise ValueError(
                 f"Endpoint is most likely invalid due to request.status_code = {request.status_code}"
             )
